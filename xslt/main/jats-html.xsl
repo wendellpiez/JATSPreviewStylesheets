@@ -60,6 +60,17 @@
 
 <!-- Change history                                                -->
 
+<!-- Revision of 2014
+     By Wendell Piez, https://github.com/wendellpiez/JATSPreviewStylesheets -->
+
+<!--
+  
+  1. Added a *commented* xsl:include calling new-improved OASIS table module.
+     Since this module will not function under XSLT 1.0, it is left for
+     users to activate. (Just uncomment the code.) But it has been tested.
+  
+  -->
+
 <!-- From jpub3-html.xsl v3.0 to jats-html.xsl v1.0:
   
 Calls to 'normalize-space($node)' where $node is not a string are
@@ -113,6 +124,36 @@ or pipeline) parameterized.
   xmlns:mml="http://www.w3.org/1998/Math/MathML"
   exclude-result-prefixes="xlink mml">
 
+
+  <!-- ============================================================= -->
+  <!--  OASIS table handling                                         -->
+  <!-- ============================================================= -->
+  
+  <!-- Uncomment this call only for OASIS table handling.
+       NOTE: works only with XSLT 2.0 processors! -->
+  <!--<xsl:import href="../oasis-tables/oasis-table-html.xsl"/>-->
+  
+  <!-- $p:hard-styles should be true() if CSS styles should be presented locally on table elements. -->
+  <!-- Alternative, call template 'p:table-css' into the HTML header to provide CSS for 'soft'
+       (i.e. class-driven) styling for table cells. -->
+  <!--<xsl:param name="p:hard-styles" select="true()" xmlns:p="http://www.wendellpiez.com/oasis-tables/util"/>-->
+  
+  
+  
+  <!-- Or, that transformation may be run as a pre- or post-process. -->
+
+  <!-- If they are run as a post-process, here is a template to prevent them from being stripped by this stylesheet. -->
+  <!--<xsl:template match="oasis:*" xmlns:oasis="http://www.niso.org/standards/z39-96/ns/oasis-exchange/table">
+    <xsl:copy><!-\- use copy-namespaces='no' under XSLT 2.0 -\->
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </xsl:template>-->
+
+  
+  
+  <!-- ============================================================= -->
+  
 
   <!--<xsl:output method="xml" indent="no" encoding="UTF-8"
     doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -204,7 +245,8 @@ or pipeline) parameterized.
           select="/article/front/article-meta/title-group/article-title[1]"/>
       </title>
       <link rel="stylesheet" type="text/css" href="{$css}"/>
-      <!-- XXX check: any other header stuff? XXX -->
+      <!-- When importing jats-oasis-html.xsl, we can call a template to insert CSS for our tables. -->
+      <!--<xsl:call-template name="p:table-css" xmlns:p="http://www.wendellpiez.com/oasis-tables/util"/>-->
     </head>
   </xsl:template>
 
@@ -3917,8 +3959,7 @@ or pipeline) parameterized.
       </p>
     </div>
   </xsl:template>
-
-
+  
   <!-- ============================================================= -->
   <!--  Utility templates for generating warnings and reports        -->
   <!-- ============================================================= -->
